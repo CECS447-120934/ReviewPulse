@@ -45,8 +45,19 @@ TODO
 
 ## LLM prompts and API workflow
 
-TODO: prompts, input/output format, limitations, and what the team built around the API.
+1. Sentence labeling (`labelers.py`)
+- `LLMLabeler` sends review sentences to Claude in batches of 25. Input is a JSON list of numbered sentences.
+- `SYSTEM_PROMPT` sets the rules and gives one few-shot example. Claude returns a JSON array with `topic`
+  (food, service, wait_time, price, cleanliness, ambience or none), `sentiment` (positive, neutral, negative) and a short `detail`.
+- `parse_llm_json` checks the reply. Invalid JSON or labels outside the allowed lists become `none / neutral`.
+- Labels are cached in SQLite, so each sentence is only sent once.
+- `KeywordLabeler` is the offline baseline. `get_labeler()` uses Claude if `ANTHROPIC_API_KEY` is set, otherwise the keyword rules.
 
+2. Reply drafting (`replies.py`)
+- `draft_reply` sends one review and its star rating to Claude. `REPLY_SYSTEM` requires a short, specific reply that never
+  promises refunds, free items or discounts and never invents facts.
+- `promise_check` warns if a reply contains words like "refund" or "free". Without a key, a generic template reply is used.
+- Replies are only drafts. The owner edits them, and nothing is posted.
 ## Completed vs. planned
 
 | Feature | Status |
