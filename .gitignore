@@ -1,0 +1,27 @@
+# Secrets: never commit keys (see .env.example)
+.env
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Data: Yelp Open Dataset terms keep raw data out of the repo
+data/raw/
+*.sqlite
+*.db
+yelp_academic_dataset_*.json
+
+# Course materials and local copies of reports
+Term_project*.pdf
+*.pdf
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
