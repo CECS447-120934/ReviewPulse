@@ -29,11 +29,21 @@ cp .env.example .env   # then put your ANTHROPIC_API_KEY in .env
 
 ## Data
 
-The Yelp Open Dataset is not included (its terms restrict redistribution). Download it from https://business.yelp.com/data/resources/open-dataset/ and place the files in `data/raw/`. TODO: sample CSV for a quick run.
+The Yelp Open Dataset is not included (its terms restrict redistribution). Download it from https://business.yelp.com/data/resources/open-dataset/ and place the files in `data/raw/`. For a quick run without it, `data/sample_reviews.csv` has 38 synthetic reviews of a fictional restaurant over 6 weeks.
+
+Loading and preprocessing (`data.py`, `preprocess.py`) need only `pandas`; tests need `pytest`. Both are in `requirements.txt`.
 
 ## Run the prototype
 
-TODO
+Preprocessing only, so far (load → clean → remove names/IDs → split into sentences by week):
+
+```bash
+python preprocess.py data/sample_reviews.csv
+python preprocess.py data/raw <business_id>   # Yelp; find IDs with data.list_restaurants()
+python -m pytest tests/ -q
+```
+
+TODO: labeling, ranking, brief and dashboard.
 
 ## Reproduce a sample result
 

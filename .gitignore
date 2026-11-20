@@ -16,6 +16,9 @@ data/raw/
 *.db
 yelp_academic_dataset_*.json
 
+# Temporary files
+*.crdownload
+
 # Course materials and local copies of reports
 Term_project*.pdf
 *.pdf
