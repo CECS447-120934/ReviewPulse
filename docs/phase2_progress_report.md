@@ -17,7 +17,7 @@ ReviewPulse gives independent restaurant owners a five-minute weekly brief of th
 
 ## 3. Architecture
 
-*[Insert the architecture diagram: the Mermaid chart in the README, rendered by GitHub, or the Phase 1 figure updated with file names.]*
+*(Diagram: see the PDF, `phase2_progress_report.pdf`, or the Mermaid chart in the README.)*
 
 Reviews (CSV/Yelp) → **Preprocess** (clean, scrub PII, split, week) → **LLM extraction** (topic, sentiment, detail; SQLite cache) → **Ranking** (no AI) → **LLM writing** (brief + grounding check; replies + promise check) → **Dashboard** → owner edits and approves. Each LLM step has an offline fallback (keyword rules, templates), so the prototype runs with or without an API key.
 

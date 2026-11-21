@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ReviewPulse: Prototype Progress Report</title>
+<!-- Print source for phase2_progress_report.pdf. Keep in sync with phase2_progress_report.md.
+     Rebuild: msedge --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=docs\phase2_progress_report.pdf docs\phase2_progress_report.html -->
+<style>
+  @page { size: Letter; margin: 0.6in 0.65in; }
+  * { box-sizing: border-box; }
+  body { font-family: "Calibri", "Segoe UI", Arial, sans-serif; font-size: 10.5pt; line-height: 1.32; color: #111; margin: 0; }
+  h1 { font-size: 16pt; margin: 0 0 3pt; }
+  h2 { font-size: 11.5pt; margin: 9pt 0 3pt; border-bottom: 1px solid #bbb; padding-bottom: 1pt; }
+  p { margin: 0 0 4pt; }
+  ul, ol { margin: 0 0 4pt; padding-left: 16pt; }
+  li { margin: 0 0 1.5pt; }
+  .meta { margin-bottom: 4pt; }
+  code { font-family: Consolas, monospace; font-size: 9.5pt; }
+  table { border-collapse: collapse; width: 100%; margin: 3pt 0 5pt; font-size: 9.5pt; }
+  th, td { border: 1px solid #999; padding: 2pt 5pt; text-align: left; vertical-align: top; }
+  th { background: #eee; }
+  td.num, th.num { text-align: right; }
+  .todo { background: #fff3b0; }
+  /* architecture diagram */
+  .arch { display: flex; align-items: stretch; gap: 0; margin: 4pt 0 3pt; font-size: 8.3pt; line-height: 1.2; }
+  .box { border: 1.2px solid #333; border-radius: 4px; padding: 3pt 4pt; text-align: center; flex: 1 1 0; display: flex; flex-direction: column; justify-content: center; background: #f6f8fb; }
+  .box b { display: block; font-size: 8.8pt; }
+  .box i { color: #444; font-family: Consolas, monospace; font-size: 7.6pt; }
+  .box.llm { background: #eaf1ff; border-color: #2b5bb8; }
+  .box.owner { border-radius: 12px; background: #eef8ee; }
+  .arr { flex: 0 0 13pt; display: flex; align-items: center; justify-content: center; font-size: 11pt; color: #333; }
+  .stack { flex: 1.15 1 0; display: flex; flex-direction: column; gap: 3pt; }
+  .stack .box { flex: 1; }
+  .cap { font-size: 9pt; color: #333; margin: 0 0 4pt; }
+  table, tr, .arch, li { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  .keep { break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<h1>ReviewPulse: Prototype Progress Report</h1>
+<div class="meta"><b>CECS 451 Term Project, Phase 2 · Team 5:</b> Christian Vanegas, Nathan Sarkozy, Nguyen Nguyen, Nathan Fender<br>
+<b>Repository:</b> https://github.com/CECS447-120934/ReviewPulse</div>
+
+<h2>1. Objective and current scope</h2>
+<p>ReviewPulse gives independent restaurant owners a five-minute weekly brief of the three problems costing them stars, each linked to the reviews behind it, plus reply drafts they edit and approve. Phase 2 scope follows the Phase 1 plan: a PoC that labels one restaurant's reviews with an LLM and compares it to a baseline, extended to an MVP with ranking, problem cards, trend charts and reply drafts in a dashboard. Live platform connections, auto-posting, multi-location accounts and billing remain out of scope.</p>
+
+<h2>2. Completed features</h2>
+<ul>
+  <li><b>End-to-end flow</b> in a Streamlit dashboard (<code>app.py</code>) and a CLI (<code>pipeline.py</code>): upload a CSV or use the sample → Analyze → KPIs, weekly trend chart, top-3 problem cards with quoted evidence, weekly brief → pick a review → draft, edit and copy a reply.</li>
+  <li><b>Data and privacy</b> (<code>data.py</code>, <code>preprocess.py</code>): loaders for Yelp JSON and any review CSV; text cleaning; scrubbing of staff and customer names, phones, emails, URLs and IDs <i>before</i> any LLM call; sentence splitting; weekly grouping.</li>
+  <li><b>AI labeling</b> (<code>labelers.py</code>): Claude Opus 5.5 labels each sentence with topic, sentiment and a short detail as JSON, in batches of 25, with a SQLite cache and an automatic keyword fallback.</li>
+  <li><b>Ranking and writing</b> (<code>ranking.py</code>, <code>brief.py</code>, <code>replies.py</code>): an explainable problem score, an LLM brief with a quote-grounding check, and reply drafts with a promise check.</li>
+  <li><b>Evaluation</b> (<code>evaluate.py</code>), 92 draft gold-labeled sentences, and 40 automated tests (no network needed).</li>
+</ul>
+
+<h2>3. Architecture</h2>
+<div class="arch">
+  <div class="box"><b>Reviews</b>CSV or Yelp JSON<i>data.py</i></div>
+  <div class="arr">→</div>
+  <div class="box"><b>Preprocess</b>clean, scrub PII, split, week<i>preprocess.py</i></div>
+  <div class="arr">→</div>
+  <div class="box llm"><b>LLM extraction</b>topic, sentiment, detail; SQLite cache<i>labelers.py, store.py</i></div>
+  <div class="arr">→</div>
+  <div class="box"><b>Ranking (no AI)</b>mentions × negativity × (1 + trend)<i>ranking.py</i></div>
+  <div class="arr">→</div>
+  <div class="stack">
+    <div class="box llm"><b>LLM brief</b>+ grounding check<i>brief.py</i></div>
+    <div class="box llm"><b>LLM replies</b>+ promise check<i>replies.py</i></div>
+  </div>
+  <div class="arr">→</div>
+  <div class="box"><b>Dashboard</b>Streamlit + Plotly<i>app.py</i></div>
+  <div class="arr">→</div>
+  <div class="box owner"><b>Owner</b>reads, edits, approves</div>
+</div>
+<p class="cap">Blue boxes call the LLM. Each has an offline fallback (keyword rules, templates), so the prototype runs with or without an API key. <code>evaluate.py</code> benchmarks the extraction step offline against the keyword baseline.</p>
+
+<h2>4. Data and model/algorithm</h2>
+<ul>
+  <li><b>Data:</b> a synthetic sample of 38 reviews over 6 weeks with a planted, growing wait-time problem and fake PII; draft gold labels for its 92 sentences; Yelp Open Dataset loader ready (data kept out of the repo per Yelp's terms).</li>
+  <li><b>Model:</b> Claude Opus 5.5 (Anthropic API) with a structured few-shot prompt, low effort for labeling and medium for the brief, and server-side refusal fallback. The key is read from an environment variable.</li>
+  <li><b>Baseline:</b> keyword rules with negation handling.</li>
+  <li><b>Ranking:</b> score = mentions × negativity × (1 + trend). Negativity weights are negative 1, neutral 0.25 and positive 0. Trend compares negative mentions with the previous 4-week window, clipped to [−0.5, 2].</li>
+</ul>
+
+<h2>5. Preliminary results</h2>
+<div class="keep">
+<p>Sentence labeling on the 92 sample sentences, scored against draft gold labels (<code>python evaluate.py</code>):</p>
+<table>
+  <tr><th>Labeler</th><th class="num">Topic macro-F1</th><th class="num">Sentiment macro-F1</th><th class="num">Joint accuracy</th><th class="num">Sec / 100 sent.</th><th class="num">Cost / 100 sent.</th></tr>
+  <tr><td>Keyword rules</td><td class="num">0.789</td><td class="num">0.464</td><td class="num">0.457</td><td class="num">&lt;0.01</td><td class="num">$0</td></tr>
+  <tr><td>Claude Opus 5.5</td><td class="num"><b>0.971</b></td><td class="num"><b>0.974</b></td><td class="num"><b>0.957</b></td><td class="num">41.6</td><td class="num">$0.095</td></tr>
+</table>
+</div>
+<p><b>Caveat:</b> the gold labels are a single AI-assisted draft (from a Claude model, the same family as the labeler), so Claude's scores are likely inflated until a human second labeler re-checks them (Phase 3).</p>
+<p><b>Why the LLM helps:</b> the baseline gets sentiment wrong more than half the time. It misses implied topics ("The tiramisu was perfect." → no topic) and mixed sentences ("Food was good but a bit pricey." → neutral). Claude's 4 errors are mostly one borderline case: "slow service" sentences labeled <code>service</code> instead of <code>wait_time</code>, and inconsistently across batches.</p>
+<p><b>End-to-end output:</b> with Claude labels, the brief ranks service and wait time at the top (11 negative mentions each in the last 4 weeks, up from 0 and 3), followed by food (5, up from 1). Service and wait time tie on score because both trends hit the +2 cap. Each problem quotes a real review and suggests a low-cost check, for example: <i>Wait time: "We left after waiting 35 minutes and no one took our order." Have the host note when each table is seated and when its order is taken.</i> The grounding check found no invented quotes.</p>
+<p><b>Cost:</b> about $0.46 to label 200 reviews (about 480 sentences), plus $0.016 per weekly brief, which is <b>about $0.52 per restaurant per month</b>. That is under the Phase 1 estimate of $1 and under 2% of the planned $29 price.</p>
+
+<h2>6. Known limitations</h2>
+<p>One label per sentence (mixed sentences lose a topic). The sample is small and synthetic, so trends are noisy. The gold labels are an AI-assisted single-pass draft, and borderline topics (slow service: <code>service</code> or <code>wait_time</code>?) are labeled inconsistently. The trend cap and weights are hand-picked, and the cap can create ties. Labeling takes about 40 s per 100 sentences, which is fine for a weekly batch but not for instant results. Regex name scrubbing misses some names. The grounding check covers quotes, not numbers. There is no fake-review filter yet, and English only.</p>
+
+<h2>7. Remaining tasks (Phase 3, due Dec 11)</h2>
+<ol>
+  <li>Human second labeler on the gold set (Cohen's kappa); add ~300 Yelp sentences and the SemEval-2014 restaurant set, then re-score all labelers on these human-labeled sets.</li>
+  <li>Clarify the "slow service" rule in the prompt and labeling guideline, tested on held-out data. Run the full flow on 2–3 real Yelp restaurants.</li>
+  <li>Add the pre-trained DeBERTa-v3 ABSA baseline.</li>
+  <li>Blind 1–5 ratings of LLM vs. template replies.</li>
+  <li>Failure analysis (including informal-English bias check); record the demo video; write the final report.</li>
+</ol>
+
+<h2>8. Member responsibilities</h2>
+<table>
+  <tr><th style="width:22%">Member</th><th>Current responsibility</th></tr>
+  <tr><td>Christian Vanegas</td><td>Repository and docs; ranking, brief, pipeline, dashboard, evaluation harness; Claude API integration</td></tr>
+  <tr><td>Nathan Fender</td><td>Data loading (Yelp, CSV), preprocessing and PII scrubbing, sample data, preprocessing tests</td></tr>
+  <tr><td>Nguyen Nguyen</td><td>LLM labeler and prompt, keyword baseline, reply drafting</td></tr>
+  <tr><td>Nathan Sarkozy</td><td class="todo">TODO</td></tr>
+</table>
+
+</body>
+</html>
