@@ -1,0 +1,93 @@
+review_id,business_id,stars,date,week,sent_idx,sentence,topic,sentiment,detail
+089fb56fa0d75ca4,csv,5.0,2026-09-28,2026-09-28,0,Best carbonara I've had in Long Beach.,food,positive,best carbonara in Long Beach
+089fb56fa0d75ca4,csv,5.0,2026-09-28,2026-09-28,1,Our server [NAME] was friendly and checked on us without hovering.,service,positive,"friendly server, checked without hovering"
+089fb56fa0d75ca4,csv,5.0,2026-09-28,2026-09-28,2,Prices are fair for the portion size.,price,positive,fair prices for portion size
+984720f50166f7f5,csv,4.0,2026-09-29,2026-09-28,0,The pasta was fresh and the sauce had real depth.,food,positive,"fresh pasta, sauce with real depth"
+984720f50166f7f5,csv,4.0,2026-09-29,2026-09-28,1,"It got a little loud once the dining room filled up, but nothing terrible.",ambience,neutral,"a little loud when full, nothing terrible"
+24a39c4762fe44ff,csv,5.0,2026-09-30,2026-09-28,0,Cozy spot with great lighting and a nice patio.,ambience,positive,"cozy, great lighting, nice patio"
+24a39c4762fe44ff,csv,5.0,2026-09-30,2026-09-28,1,The tiramisu was perfect.,food,positive,tiramisu perfect
+24a39c4762fe44ff,csv,5.0,2026-09-30,2026-09-28,2,We'll be back!,none,positive,will return
+699ad09ecf18895c,csv,3.0,2026-10-01,2026-09-28,0,Food was good but a bit pricey.,price,negative,food good but a bit pricey
+699ad09ecf18895c,csv,3.0,2026-10-01,2026-09-28,1,$24.50 for a plate of gnocchi feels steep.,price,negative,$24.50 gnocchi feels steep
+699ad09ecf18895c,csv,3.0,2026-10-01,2026-09-28,2,Service was attentive though.,service,positive,attentive service
+8df81bc4451416cb,csv,4.0,2026-10-02,2026-09-28,0,"Quick lunch, food came out fast.",wait_time,positive,food came out fast
+8df81bc4451416cb,csv,4.0,2026-10-02,2026-09-28,1,The Caesar salad was crisp and the dressing was not too heavy.,food,positive,"crisp Caesar, light dressing"
+a48f010d65948b03,csv,2.0,2026-10-03,2026-09-28,0,The bathroom was dirty and the tables were sticky when we sat down.,cleanliness,negative,"dirty bathroom, sticky tables"
+a48f010d65948b03,csv,2.0,2026-10-03,2026-09-28,1,"Food was fine, nothing special.",food,neutral,"fine, nothing special"
+ba2cf6305966bcef,csv,5.0,2026-10-03,2026-09-28,0,"Shoutout to [NAME] behind the bar, he made an amazing negroni.",service,positive,bartender made amazing negroni
+ba2cf6305966bcef,csv,5.0,2026-10-03,2026-09-28,1,Great vibe on a Saturday night.,ambience,positive,great Saturday night vibe
+0fef9640dc7c448a,csv,4.0,2026-10-05,2026-10-05,0,Solid neighborhood Italian.,food,positive,solid neighborhood Italian
+0fef9640dc7c448a,csv,4.0,2026-10-05,2026-10-05,1,"The wait was not bad, maybe 10 minutes on a Monday.",wait_time,positive,about 10-minute wait on Monday
+0fef9640dc7c448a,csv,4.0,2026-10-05,2026-10-05,2,Bread was warm and fresh.,food,positive,"warm, fresh bread"
+8322019560e9c326,csv,3.0,2026-10-06,2026-10-05,0,Our pizza took 35 minutes to arrive.,wait_time,negative,35-minute wait for pizza
+8322019560e9c326,csv,3.0,2026-10-06,2026-10-05,1,"When it came it was delicious, but the wait was annoying.",wait_time,negative,delicious but annoying wait
+3dc76d2ec3347adf,csv,5.0,2026-10-07,2026-10-05,0,[NAME] (the manager) came by to make sure everything was good.,service,positive,manager checked on table
+3dc76d2ec3347adf,csv,5.0,2026-10-07,2026-10-05,1,Lasagna was excellent.,food,positive,excellent lasagna
+dc97fa80a30df85c,csv,2.0,2026-10-08,2026-10-05,0,Overpriced for what you get.,price,negative,overpriced for what you get
+dc97fa80a30df85c,csv,2.0,2026-10-08,2026-10-05,1,The steak was overcooked and the fries were lukewarm.,food,negative,"steak overcooked, fries lukewarm"
+7f7574aaf7206d79,csv,4.0,2026-10-09,2026-10-05,0,Lovely atmosphere and the music was at a good volume.,ambience,positive,"lovely atmosphere, good music volume"
+7f7574aaf7206d79,csv,4.0,2026-10-09,2026-10-05,1,The risotto was creamy and well seasoned.,food,positive,risotto creamy and well seasoned
+c3af4dc0939ccdf9,csv,3.0,2026-10-11,2026-10-05,0,We waited 40 minutes for a table even with a reservation.,wait_time,negative,40-minute wait despite reservation
+c3af4dc0939ccdf9,csv,3.0,2026-10-11,2026-10-05,1,The food was good once we finally sat down.,food,positive,food good after long wait
+f25be09e2bcc463d,csv,4.0,2026-10-12,2026-10-12,0,Friendly staff and good food.,service,positive,friendly staff and good food
+f25be09e2bcc463d,csv,4.0,2026-10-12,2026-10-12,1,The soup was a little bland.,food,negative,soup a little bland
+f25be09e2bcc463d,csv,4.0,2026-10-12,2026-10-12,2,Call ahead at [PHONE] for big groups.,none,neutral,call ahead for big groups
+b6f564e930c79532,csv,2.0,2026-10-13,2026-10-12,0,Sat 45 minutes before anyone came over to take our order.,wait_time,negative,45-minute wait to take order
+b6f564e930c79532,csv,2.0,2026-10-13,2026-10-12,1,Our waitress seemed overwhelmed.,service,negative,waitress seemed overwhelmed
+b6f564e930c79532,csv,2.0,2026-10-13,2026-10-12,2,The pasta itself was good.,food,positive,pasta itself was good
+dcc50013a0a428fe,csv,5.0,2026-10-14,2026-10-12,0,Everything was delicious.,food,positive,everything delicious
+dcc50013a0a428fe,csv,5.0,2026-10-14,2026-10-12,1,The calamari was crispy and not greasy.,food,positive,"calamari crispy, not greasy"
+dcc50013a0a428fe,csv,5.0,2026-10-14,2026-10-12,2,Great value for the price.,price,positive,great value for the price
+497bea71046829ec,csv,3.0,2026-10-15,2026-10-12,0,Restrooms could be cleaner.,cleanliness,negative,restrooms could be cleaner
+497bea71046829ec,csv,3.0,2026-10-15,2026-10-12,1,Food was tasty and the server was nice.,food,positive,"tasty food, nice server"
+1865ff9bf1ad014d,csv,2.0,2026-10-17,2026-10-12,0,Took over an hour to get our entrees on a Saturday.,wait_time,negative,over an hour for entrees
+1865ff9bf1ad014d,csv,2.0,2026-10-17,2026-10-12,1,The kitchen is clearly understaffed.,service,negative,kitchen understaffed
+1865ff9bf1ad014d,csv,2.0,2026-10-17,2026-10-12,2,Desserts were good.,food,positive,desserts were good
+aa388d5f4a35fc97,csv,4.0,2026-10-18,2026-10-12,0,"Ask for [NAME], she gave great wine recommendations.",service,positive,great wine recommendations from server
+aa388d5f4a35fc97,csv,4.0,2026-10-18,2026-10-12,1,The patio is a nice place to spend an evening.,ambience,positive,nice patio for an evening
+1d41b4836f41e198,csv,3.0,2026-10-19,2026-10-19,0,Food was good but it was so noisy we couldn't hear each other.,ambience,negative,too noisy to hear each other
+1d41b4836f41e198,csv,3.0,2026-10-19,2026-10-19,1,Prices went up since last time.,price,negative,prices went up
+c11c90eb020c3b51,csv,2.0,2026-10-20,2026-10-19,0,We waited 30 minutes for drinks... and another 30 for food.,wait_time,negative,"30 min for drinks, 30 more for food"
+c11c90eb020c3b51,csv,2.0,2026-10-20,2026-10-19,1,The chicken parm was cold in the middle.,food,negative,chicken parm cold in the middle
+4fd5c85a84395215,csv,4.0,2026-10-21,2026-10-19,0,Great pizza and the crust was perfect.,food,positive,"great pizza, perfect crust"
+4fd5c85a84395215,csv,4.0,2026-10-21,2026-10-19,1,Service was a bit slow but friendly.,wait_time,negative,slow but friendly service
+1d2a55f804c7b0a3,csv,1.0,2026-10-22,2026-10-19,0,Never got our appetizer and nobody apologized.,service,negative,"appetizer never arrived, no apology"
+1d2a55f804c7b0a3,csv,1.0,2026-10-22,2026-10-19,1,The host was rude when we asked about our wait.,service,negative,rude host
+1d2a55f804c7b0a3,csv,1.0,2026-10-22,2026-10-19,2,Won't be back.,none,negative,won't return
+9a7373f895e1770b,csv,3.0,2026-10-24,2026-10-19,0,The food is still great but the wait times have gotten worse.,wait_time,negative,wait times worse
+9a7373f895e1770b,csv,3.0,2026-10-24,2026-10-19,1,50 minutes for two pastas on a Friday is too long.,wait_time,negative,50 minutes for two pastas
+1b9fe412c3d298bf,csv,5.0,2026-10-25,2026-10-19,0,Fantastic meal for our anniversary.,food,positive,fantastic anniversary meal
+1b9fe412c3d298bf,csv,5.0,2026-10-25,2026-10-19,1,Our server [NAME] remembered us from last time.,service,positive,server remembered us
+1b9fe412c3d298bf,csv,5.0,2026-10-25,2026-10-19,2,The panna cotta was amazing.,food,positive,amazing panna cotta
+5eed61d490052a5d,csv,2.0,2026-10-26,2026-10-26,0,Slow service again.,wait_time,negative,slow service again
+5eed61d490052a5d,csv,2.0,2026-10-26,2026-10-26,1,We flagged down three different people for the check.,service,negative,hard to get the check
+5eed61d490052a5d,csv,2.0,2026-10-26,2026-10-26,2,Food was decent.,food,neutral,food decent
+711a54845d688aa6,csv,3.0,2026-10-27,2026-10-26,0,Tables near the kitchen are cramped and hot.,ambience,negative,"cramped, hot tables near kitchen"
+711a54845d688aa6,csv,3.0,2026-10-27,2026-10-26,1,"The gnocchi was good though, and the portion was generous.",food,positive,"good gnocchi, generous portion"
+ad530a2761c8a2e2,csv,2.0,2026-10-28,2026-10-26,0,Our order was wrong and it took 25 minutes to fix it.,service,negative,"wrong order, 25 min to fix"
+ad530a2761c8a2e2,csv,2.0,2026-10-28,2026-10-26,1,"The manager comped nothing, just shrugged.",service,negative,"manager shrugged, no comp"
+ff36b3a4a87d32f2,csv,4.0,2026-10-29,2026-10-26,0,Fresh ingredients and a cozy dining room.,food,positive,"fresh ingredients, cozy dining room"
+ff36b3a4a87d32f2,csv,4.0,2026-10-29,2026-10-26,1,Waited about 20 min for a table which is fine for a Thursday.,wait_time,positive,20 min wait acceptable
+597e4a1c2ec560dc,csv,2.0,2026-10-31,2026-10-26,0,An hour and 10 minutes from sitting down to getting food.,wait_time,negative,70 minutes to get food
+597e4a1c2ec560dc,csv,2.0,2026-10-31,2026-10-26,1,The bolognese was good when it arrived.,food,positive,good bolognese
+b6e7dc537f3c84ae,csv,3.0,2026-11-01,2026-10-26,0,Bathroom was out of paper towels and the floor was wet.,cleanliness,negative,"no paper towels, wet floor"
+b6e7dc537f3c84ae,csv,3.0,2026-11-01,2026-10-26,1,Food was tasty.,food,positive,tasty food
+b6e7dc537f3c84ae,csv,3.0,2026-11-01,2026-10-26,2,Email [EMAIL] if you're the owner.,none,neutral,
+c2cfec3028f7cdb5,csv,4.0,2026-11-02,2026-11-02,0,Great espresso and the cannoli were fresh.,food,positive,"great espresso, fresh cannoli"
+c2cfec3028f7cdb5,csv,4.0,2026-11-02,2026-11-02,1,A bit pricey but worth it.,price,positive,pricey but worth it
+d614f15870931e02,csv,1.0,2026-11-03,2026-11-02,0,We left after waiting 35 minutes and no one took our order.,wait_time,negative,"left after 35-minute wait, no order taken"
+d614f15870931e02,csv,1.0,2026-11-03,2026-11-02,1,Staff walked past us the whole time.,service,negative,staff ignored us
+dcca4ede484f87cb,csv,2.0,2026-11-04,2026-11-02,0,Food has gone downhill.,food,negative,food gone downhill
+dcca4ede484f87cb,csv,2.0,2026-11-04,2026-11-02,1,The pasta was mushy and the sauce tasted like it came from a jar.,food,negative,"mushy pasta, jarred-tasting sauce"
+dcca4ede484f87cb,csv,2.0,2026-11-04,2026-11-02,2,Slow service too.,service,negative,slow service
+59d4afedde0033e2,csv,3.0,2026-11-05,2026-11-02,0,Nice ambience and the music was great.,ambience,positive,"nice ambience, great music"
+59d4afedde0033e2,csv,3.0,2026-11-05,2026-11-02,1,Mains took 45 minutes.,wait_time,negative,45-minute wait for mains
+59d4afedde0033e2,csv,3.0,2026-11-05,2026-11-02,2,[NAME] recommended this place to us.,none,neutral,
+bd9ddaa32af32818,csv,2.0,2026-11-06,2026-11-02,0,"Long wait for a table, then a long wait for food.",wait_time,negative,long waits for table and food
+bd9ddaa32af32818,csv,2.0,2026-11-06,2026-11-02,1,Our server [NAME] apologized but it didn't help much.,service,negative,server apology didn't help
+aa5867e5a0ed2e8e,csv,4.0,2026-11-07,2026-11-02,0,The seafood linguine was excellent.,food,positive,seafood linguine excellent
+aa5867e5a0ed2e8e,csv,4.0,2026-11-07,2026-11-02,1,"The wait was not too bad at lunch, around 15 minutes.",wait_time,positive,15-minute lunch wait not bad
+aa5867e5a0ed2e8e,csv,4.0,2026-11-07,2026-11-02,2,See [URL] for specials.,none,neutral,
+32796d71209891f5,csv,2.0,2026-11-08,2026-11-02,0,Sticky menus and dirty silverware.,cleanliness,negative,"sticky menus, dirty silverware"
+32796d71209891f5,csv,2.0,2026-11-08,2026-11-02,1,The food was okay but I lost my appetite.,food,negative,food okay but lost appetite
+32796d71209891f5,csv,2.0,2026-11-08,2026-11-02,2,"Service was slow, as usual lately.",service,negative,"slow service, as usual lately"

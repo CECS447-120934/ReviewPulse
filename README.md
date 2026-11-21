@@ -4,7 +4,7 @@ AI review insights for independent restaurants. ReviewPulse turns a restaurant's
 
 CECS 451 Term Project, Team 5: Christian Vanegas, Nathan Sarkozy, Nguyen Nguyen, Nathan Fender
 
-> **Status (Phase 2, Nov 20, 2026):** working MVP. The full flow (CSV → sentences → labels → ranked problems → brief → reply drafts) runs in a Streamlit dashboard and from the command line, with Claude Opus 5.5 or a fully offline keyword fallback. See [Completed vs. planned](#completed-vs-planned).
+> **Status (Phase 2, Nov 20, 2026):** working MVP, run live with Claude Opus 5.5. The full flow (CSV → sentences → labels → ranked problems → brief → reply drafts) runs in a Streamlit dashboard and from the command line, with Claude Opus 5.5 or a fully offline keyword fallback. See [Completed vs. planned](#completed-vs-planned).
 
 ## Architecture
 
@@ -47,7 +47,7 @@ Configuration (environment variables or `.env`):
 ## Data
 
 - **Sample (included):** `data/sample_reviews.csv` has 38 synthetic reviews of a fictional Long Beach Italian restaurant over 6 weeks (Sep 28 to Nov 8, 2026). It includes a planted problem: wait-time complaints grow over the last four weeks. It also contains fake names, a phone number, an email and a URL, to test scrubbing.
-- **Gold labels (included):** `data/gold/sample_gold.csv` has the 92 preprocessed sample sentences, each with one topic and sentiment. These are **draft labels from a single annotator** and still need the second-labeler pass and Cohen's kappa planned in Phase 1. Guideline: label the main thing the sentence judges; slowness and waiting are `wait_time`, and staff behavior is `service`.
+- **Gold labels (included):** `data/gold/sample_gold.csv` has the 92 preprocessed sample sentences, each with one topic and sentiment. These are a **single AI-assisted draft** (from a Claude model, the same family as the labeler under test). They still need the human second-labeler pass and Cohen's kappa planned in Phase 1, so treat scores against them as preliminary. Guideline: label the main thing the sentence judges; slowness and waiting are `wait_time`, and staff behavior is `service`.
 - **Yelp Open Dataset (not included):** its terms restrict redistribution. Download it from https://business.yelp.com/data/resources/open-dataset/ and put the JSON files in `data/raw/` (git-ignored). Use `data.list_restaurants("data/raw", city="Philadelphia")` to pick a `business_id`.
 - **Your own CSV:** any file with a text column (`text`, `review`, `comment`, `body`...) and a date column (`date`, `created_at`, `review_date`...). A rating column (`stars`, `rating`...) is optional.
 
@@ -87,7 +87,29 @@ Top problems:
 keyword-rules 92           0.789               0.464           0.457               0               True
 ```
 
-The planted wait-time problem ranks first, and each problem links to quoted sentences ([`brief.md`](docs/sample_output/brief.md), [`problems.json`](docs/sample_output/problems.json)). The keyword baseline finds topics reasonably well but gets sentiment wrong more than half the time ([`eval_errors.csv`](docs/sample_output/eval_errors.csv)). It misses implied topics ("The tiramisu was perfect." → `none`) and mixed sentences ("Food was good but a bit pricey." → `neutral`). These are the cases the LLM labeler is meant to fix. Running with a key adds a `llm:claude-opus-5-5` row to the same table, with cost per 100 sentences.
+The planted wait-time problem ranks first, and each problem links to quoted sentences ([`brief.md`](docs/sample_output/brief.md), [`problems.json`](docs/sample_output/problems.json)). The keyword baseline finds topics reasonably well but gets sentiment wrong more than half the time ([`eval_errors.csv`](docs/sample_output/eval_errors.csv)). It misses implied topics ("The tiramisu was perfect." → `none`) and mixed sentences ("Food was good but a bit pricey." → `neutral`). These are the cases the LLM labeler is meant to fix.
+
+### With Claude (needs an API key; outputs vary slightly between runs)
+
+```bash
+python evaluate.py
+python pipeline.py data/sample_reviews.csv --out docs/sample_output_llm
+```
+
+Our run on Nov 20, 2026, kept in [`docs/sample_output_llm/`](docs/sample_output_llm/):
+
+```
+            labeler  n  topic_macro_f1  sentiment_macro_f1  joint_accuracy  sec_per_100  usd_per_100  wait_time_in_top3
+      keyword-rules 92           0.789               0.464           0.457         0.00       0.0000               True
+llm:claude-opus-5-5 92           0.971               0.974           0.957        41.59       0.0949               True
+
+Top problems:
+  1. service      score   33.0  negative 11 (prev 0)  trend +2.0
+  2. wait_time    score   33.0  negative 11 (prev 3)  trend +2.0
+  3. food         score  15.75  negative 5 (prev 1)  trend +2.0
+```
+
+Claude makes 4 errors out of 92, mostly "slow service" sentences labeled `service` instead of `wait_time`, and inconsistently across batches ([`eval_errors.csv`](docs/sample_output_llm/eval_errors.csv)). Service and wait time tie because both trends hit the +2 cap. The generated [`brief.md`](docs/sample_output_llm/brief.md) quotes only real sentences; the grounding check found nothing invented. The scores are against AI-drafted gold labels (see [Data](#data)), so they are preliminary. Note that `pipeline.py` reuses labels cached by `evaluate.py`, so its reported cost covers only the brief.
 
 ## Main files
 
@@ -129,7 +151,7 @@ All calls go through `llm.complete()`: Claude Opus 5.5 via `client.beta.messages
 
 **The team's own contribution** beyond the API call: data loading for Yelp and arbitrary CSVs; PII scrubbing and sentence splitting; batching, caching and fallback; the ranking formula and evidence selection; grounding and promise checks; the keyword baseline; the evaluation harness and gold labels; and the dashboard.
 
-**Cost:** at $4 / $20 per million input/output tokens, the CLI and dashboard report actual tokens and estimated dollars for each run. The Phase 1 estimate was under $1 per restaurant per month for 200 reviews. *TODO: fill in the measured cost per 100 sentences from `python evaluate.py` with a key.*
+**Cost:** at $4 / $20 per million input/output tokens, the CLI and dashboard report actual tokens and estimated dollars for each run. Measured on the sample: **$0.095 per 100 sentences** for labeling (41.6 s per 100) and about $0.016 per brief. A restaurant with 200 reviews a month (about 480 sentences) plus four weekly briefs costs **about $0.52 per month**, under the Phase 1 estimate of $1.
 
 ## Completed vs. planned
 
@@ -137,7 +159,7 @@ All calls go through `llm.complete()`: Claude Opus 5.5 via `client.beta.messages
 | --- | --- |
 | CSV and Yelp loading, flexible headers | Done (`data.py`) |
 | Cleaning, PII scrubbing, sentence split, weekly grouping | Done (`preprocess.py`, 24 tests) |
-| Claude sentence labeling (batched, cached, fallback) | Done (`labelers.py`). Tested with a fake client; **live run pending an API key** |
+| Claude sentence labeling (batched, cached, fallback) | Done (`labelers.py`). Live run on Nov 20, 2026 |
 | Keyword baseline | Done |
 | Problem ranking with trend and evidence | Done (`ranking.py`) |
 | Weekly brief, LLM or template, with grounding check | Done (`brief.py`) |
@@ -145,7 +167,7 @@ All calls go through `llm.complete()`: Claude Opus 5.5 via `client.beta.messages
 | Streamlit dashboard, end to end | Done (`app.py`) |
 | Evaluation harness (macro-F1, joint accuracy, cost, top-3 check) | Done (`evaluate.py`) |
 | Keyword baseline results on the sample gold set | Done (table above) |
-| Claude results on the gold set; cost per 100 sentences | Planned: needs a run with the team's API key |
+| Claude results on the draft gold set; cost per 100 sentences | Done (preliminary; see [Reproduce](#with-claude-needs-an-api-key-outputs-vary-slightly-between-runs)) |
 | Second labeler and Cohen's kappa for the gold set; ~300 Yelp sentences | Planned (Phase 3) |
 | SemEval-2014 restaurant benchmark | Planned (Phase 3) |
 | Pre-trained DeBERTa-v3 ABSA baseline | Planned (Phase 3) |
@@ -156,7 +178,9 @@ All calls go through `llm.complete()`: Claude Opus 5.5 via `client.beta.messages
 
 - **One label per sentence.** "Food was good but a bit pricey" is about two topics; we keep only the main one, so the second complaint is lost.
 - **The sample is small and synthetic.** With 38 reviews, the "previous window" covers only 2 weeks, so trends are large and noisy. Real restaurants need more history.
-- **Gold labels are a draft** from one annotator, and the keyword rules were written knowing the same kind of sentences. Its scores are optimistic, not a fair benchmark.
+- **Gold labels are an AI-assisted draft.** They come from a Claude model, the same family as the labeler, and the keyword rules were written knowing the same kind of sentences. Both sets of scores are optimistic until humans re-label (Phase 3).
+- **Borderline topics are inconsistent.** "Slow service" goes to `service` in some batches and `wait_time` in others.
+- **The trend cap can tie scores.** Service and wait time tie at +2 on the sample.
 - **The trend clip [-0.5, 2] and sentiment weights are hand-picked**, not fitted to rating outcomes. `avg_stars_when_negative` is shown as an impact hint but is not used in the score.
 - **Name scrubbing is regex-based.** It catches common patterns ("our server Jessica", "ask for Mike") but not every name.
 - **The grounding check covers quotes only.** It does not verify numbers or suggestions in the LLM brief.

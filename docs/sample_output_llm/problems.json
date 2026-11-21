@@ -1,0 +1,118 @@
+{
+  "labeler": "llm:claude-opus-5-5",
+  "summary": {
+    "window_start": "2026-10-12",
+    "window_end": "2026-11-08",
+    "weeks": 4,
+    "reviews": 25,
+    "sentences": 62,
+    "avg_stars": 2.88
+  },
+  "problems": [
+    {
+      "topic": "service",
+      "score": 33.0,
+      "mentions": 14,
+      "negative_mentions": 11,
+      "negative_mentions_prev_window": 0,
+      "negativity": 0.79,
+      "trend": 2.0,
+      "reviews_affected": 9,
+      "avg_stars_when_negative": 1.78,
+      "avg_stars_overall": 2.88,
+      "evidence": [
+        {
+          "review_id": "32796d71209891f5",
+          "date": "2026-11-08",
+          "stars": 2.0,
+          "sentence": "Service was slow, as usual lately.",
+          "detail": "slow service, as usual lately"
+        },
+        {
+          "review_id": "bd9ddaa32af32818",
+          "date": "2026-11-06",
+          "stars": 2.0,
+          "sentence": "Our server [NAME] apologized but it didn't help much.",
+          "detail": "server apology didn't help"
+        },
+        {
+          "review_id": "dcca4ede484f87cb",
+          "date": "2026-11-04",
+          "stars": 2.0,
+          "sentence": "Slow service too.",
+          "detail": "slow service"
+        }
+      ]
+    },
+    {
+      "topic": "wait_time",
+      "score": 33.0,
+      "mentions": 13,
+      "negative_mentions": 11,
+      "negative_mentions_prev_window": 3,
+      "negativity": 0.85,
+      "trend": 2.0,
+      "reviews_affected": 10,
+      "avg_stars_when_negative": 2.3,
+      "avg_stars_overall": 2.88,
+      "evidence": [
+        {
+          "review_id": "bd9ddaa32af32818",
+          "date": "2026-11-06",
+          "stars": 2.0,
+          "sentence": "Long wait for a table, then a long wait for food.",
+          "detail": "long waits for table and food"
+        },
+        {
+          "review_id": "59d4afedde0033e2",
+          "date": "2026-11-05",
+          "stars": 3.0,
+          "sentence": "Mains took 45 minutes.",
+          "detail": "45-minute wait for mains"
+        },
+        {
+          "review_id": "d614f15870931e02",
+          "date": "2026-11-03",
+          "stars": 1.0,
+          "sentence": "We left after waiting 35 minutes and no one took our order.",
+          "detail": "left after 35-minute wait, no order taken"
+        }
+      ]
+    },
+    {
+      "topic": "food",
+      "score": 15.75,
+      "mentions": 20,
+      "negative_mentions": 5,
+      "negative_mentions_prev_window": 1,
+      "negativity": 0.26,
+      "trend": 2.0,
+      "reviews_affected": 4,
+      "avg_stars_when_negative": 2.5,
+      "avg_stars_overall": 2.88,
+      "evidence": [
+        {
+          "review_id": "32796d71209891f5",
+          "date": "2026-11-08",
+          "stars": 2.0,
+          "sentence": "The food was okay but I lost my appetite.",
+          "detail": "food okay but lost appetite"
+        },
+        {
+          "review_id": "dcca4ede484f87cb",
+          "date": "2026-11-04",
+          "stars": 2.0,
+          "sentence": "Food has gone downhill.",
+          "detail": "food gone downhill"
+        },
+        {
+          "review_id": "c11c90eb020c3b51",
+          "date": "2026-10-20",
+          "stars": 2.0,
+          "sentence": "The chicken parm was cold in the middle.",
+          "detail": "chicken parm cold in the middle"
+        }
+      ]
+    }
+  ]
+}

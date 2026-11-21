@@ -1,0 +1,55 @@
+labeler,sentence,gold_topic,pred_topic,gold_sentiment,pred_sentiment
+keyword-rules,Best carbonara I've had in Long Beach.,food,none,positive,neutral
+keyword-rules,Prices are fair for the portion size.,price,price,positive,neutral
+keyword-rules,"It got a little loud once the dining room filled up, but nothing terrible.",ambience,ambience,neutral,negative
+keyword-rules,The tiramisu was perfect.,food,none,positive,neutral
+keyword-rules,We'll be back!,none,none,positive,neutral
+keyword-rules,Food was good but a bit pricey.,price,price,negative,neutral
+keyword-rules,$24.50 for a plate of gnocchi feels steep.,price,none,negative,neutral
+keyword-rules,The Caesar salad was crisp and the dressing was not too heavy.,food,food,positive,neutral
+keyword-rules,"Shoutout to [NAME] behind the bar, he made an amazing negroni.",service,none,positive,neutral
+keyword-rules,Solid neighborhood Italian.,none,none,positive,neutral
+keyword-rules,Our pizza took 35 minutes to arrive.,wait_time,wait_time,negative,neutral
+keyword-rules,"When it came it was delicious, but the wait was annoying.",wait_time,wait_time,negative,positive
+keyword-rules,Lasagna was excellent.,food,none,positive,neutral
+keyword-rules,The risotto was creamy and well seasoned.,food,none,positive,neutral
+keyword-rules,We waited 40 minutes for a table even with a reservation.,wait_time,wait_time,negative,neutral
+keyword-rules,Sat 45 minutes before anyone came over to take our order.,wait_time,wait_time,negative,neutral
+keyword-rules,Our waitress seemed overwhelmed.,service,wait_time,negative,neutral
+keyword-rules,The calamari was crispy and not greasy.,food,cleanliness,positive,positive
+keyword-rules,Restrooms could be cleaner.,cleanliness,cleanliness,negative,neutral
+keyword-rules,Food was tasty and the server was nice.,food,service,positive,positive
+keyword-rules,Took over an hour to get our entrees on a Saturday.,wait_time,wait_time,negative,neutral
+keyword-rules,The kitchen is clearly understaffed.,service,service,negative,neutral
+keyword-rules,"Ask for [NAME], she gave great wine recommendations.",service,none,positive,neutral
+keyword-rules,The patio is a nice place to spend an evening.,ambience,ambience,positive,neutral
+keyword-rules,Food was good but it was so noisy we couldn't hear each other.,ambience,food,negative,neutral
+keyword-rules,Prices went up since last time.,price,price,negative,neutral
+keyword-rules,We waited 30 minutes for drinks... and another 30 for food.,wait_time,wait_time,negative,neutral
+keyword-rules,Service was a bit slow but friendly.,wait_time,service,negative,neutral
+keyword-rules,Never got our appetizer and nobody apologized.,service,none,negative,neutral
+keyword-rules,Won't be back.,none,none,negative,neutral
+keyword-rules,The food is still great but the wait times have gotten worse.,wait_time,wait_time,negative,positive
+keyword-rules,Fantastic meal for our anniversary.,food,none,positive,neutral
+keyword-rules,Our server [NAME] remembered us from last time.,service,service,positive,neutral
+keyword-rules,The panna cotta was amazing.,food,none,positive,neutral
+keyword-rules,We flagged down three different people for the check.,service,none,negative,neutral
+keyword-rules,Tables near the kitchen are cramped and hot.,ambience,cleanliness,negative,neutral
+keyword-rules,"The gnocchi was good though, and the portion was generous.",food,none,positive,neutral
+keyword-rules,Our order was wrong and it took 25 minutes to fix it.,service,wait_time,negative,neutral
+keyword-rules,"The manager comped nothing, just shrugged.",service,service,negative,neutral
+keyword-rules,Waited about 20 min for a table which is fine for a Thursday.,wait_time,wait_time,positive,neutral
+keyword-rules,An hour and 10 minutes from sitting down to getting food.,wait_time,wait_time,negative,neutral
+keyword-rules,The bolognese was good when it arrived.,food,none,positive,neutral
+keyword-rules,Bathroom was out of paper towels and the floor was wet.,cleanliness,cleanliness,negative,neutral
+keyword-rules,A bit pricey but worth it.,price,price,positive,neutral
+keyword-rules,We left after waiting 35 minutes and no one took our order.,wait_time,wait_time,negative,neutral
+keyword-rules,Staff walked past us the whole time.,service,service,negative,neutral
+keyword-rules,Food has gone downhill.,food,food,negative,neutral
+keyword-rules,The pasta was mushy and the sauce tasted like it came from a jar.,food,food,negative,neutral
+keyword-rules,Mains took 45 minutes.,wait_time,wait_time,negative,neutral
+keyword-rules,Our server [NAME] apologized but it didn't help much.,service,service,negative,neutral
+llm:claude-opus-5-5,Solid neighborhood Italian.,none,food,positive,positive
+llm:claude-opus-5-5,Slow service too.,wait_time,service,negative,negative
+llm:claude-opus-5-5,The food was okay but I lost my appetite.,food,food,neutral,negative
+llm:claude-opus-5-5,"Service was slow, as usual lately.",wait_time,service,negative,negative
