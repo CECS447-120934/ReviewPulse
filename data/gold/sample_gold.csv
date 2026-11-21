@@ -1,0 +1,93 @@
+sentence,topic,sentiment
+Best carbonara I've had in Long Beach.,food,positive
+Our server [NAME] was friendly and checked on us without hovering.,service,positive
+Prices are fair for the portion size.,price,positive
+The pasta was fresh and the sauce had real depth.,food,positive
+"It got a little loud once the dining room filled up, but nothing terrible.",ambience,neutral
+Cozy spot with great lighting and a nice patio.,ambience,positive
+The tiramisu was perfect.,food,positive
+We'll be back!,none,positive
+Food was good but a bit pricey.,price,negative
+$24.50 for a plate of gnocchi feels steep.,price,negative
+Service was attentive though.,service,positive
+"Quick lunch, food came out fast.",wait_time,positive
+The Caesar salad was crisp and the dressing was not too heavy.,food,positive
+The bathroom was dirty and the tables were sticky when we sat down.,cleanliness,negative
+"Food was fine, nothing special.",food,neutral
+"Shoutout to [NAME] behind the bar, he made an amazing negroni.",service,positive
+Great vibe on a Saturday night.,ambience,positive
+Solid neighborhood Italian.,none,positive
+"The wait was not bad, maybe 10 minutes on a Monday.",wait_time,positive
+Bread was warm and fresh.,food,positive
+Our pizza took 35 minutes to arrive.,wait_time,negative
+"When it came it was delicious, but the wait was annoying.",wait_time,negative
+[NAME] (the manager) came by to make sure everything was good.,service,positive
+Lasagna was excellent.,food,positive
+Overpriced for what you get.,price,negative
+The steak was overcooked and the fries were lukewarm.,food,negative
+Lovely atmosphere and the music was at a good volume.,ambience,positive
+The risotto was creamy and well seasoned.,food,positive
+We waited 40 minutes for a table even with a reservation.,wait_time,negative
+The food was good once we finally sat down.,food,positive
+Friendly staff and good food.,service,positive
+The soup was a little bland.,food,negative
+Call ahead at [PHONE] for big groups.,none,neutral
+Sat 45 minutes before anyone came over to take our order.,wait_time,negative
+Our waitress seemed overwhelmed.,service,negative
+The pasta itself was good.,food,positive
+Everything was delicious.,food,positive
+The calamari was crispy and not greasy.,food,positive
+Great value for the price.,price,positive
+Restrooms could be cleaner.,cleanliness,negative
+Food was tasty and the server was nice.,food,positive
+Took over an hour to get our entrees on a Saturday.,wait_time,negative
+The kitchen is clearly understaffed.,service,negative
+Desserts were good.,food,positive
+"Ask for [NAME], she gave great wine recommendations.",service,positive
+The patio is a nice place to spend an evening.,ambience,positive
+Food was good but it was so noisy we couldn't hear each other.,ambience,negative
+Prices went up since last time.,price,negative
+We waited 30 minutes for drinks... and another 30 for food.,wait_time,negative
+The chicken parm was cold in the middle.,food,negative
+Great pizza and the crust was perfect.,food,positive
+Service was a bit slow but friendly.,wait_time,negative
+Never got our appetizer and nobody apologized.,service,negative
+The host was rude when we asked about our wait.,service,negative
+Won't be back.,none,negative
+The food is still great but the wait times have gotten worse.,wait_time,negative
+50 minutes for two pastas on a Friday is too long.,wait_time,negative
+Fantastic meal for our anniversary.,food,positive
+Our server [NAME] remembered us from last time.,service,positive
+The panna cotta was amazing.,food,positive
+Slow service again.,wait_time,negative
+We flagged down three different people for the check.,service,negative
+Food was decent.,food,neutral
+Tables near the kitchen are cramped and hot.,ambience,negative
+"The gnocchi was good though, and the portion was generous.",food,positive
+Our order was wrong and it took 25 minutes to fix it.,service,negative
+"The manager comped nothing, just shrugged.",service,negative
+Fresh ingredients and a cozy dining room.,food,positive
+Waited about 20 min for a table which is fine for a Thursday.,wait_time,positive
+An hour and 10 minutes from sitting down to getting food.,wait_time,negative
+The bolognese was good when it arrived.,food,positive
+Bathroom was out of paper towels and the floor was wet.,cleanliness,negative
+Food was tasty.,food,positive
+Email [EMAIL] if you're the owner.,none,neutral
+Great espresso and the cannoli were fresh.,food,positive
+A bit pricey but worth it.,price,positive
+We left after waiting 35 minutes and no one took our order.,wait_time,negative
+Staff walked past us the whole time.,service,negative
+Food has gone downhill.,food,negative
+The pasta was mushy and the sauce tasted like it came from a jar.,food,negative
+Slow service too.,wait_time,negative
+Nice ambience and the music was great.,ambience,positive
+Mains took 45 minutes.,wait_time,negative
+[NAME] recommended this place to us.,none,neutral
+"Long wait for a table, then a long wait for food.",wait_time,negative
+Our server [NAME] apologized but it didn't help much.,service,negative
+The seafood linguine was excellent.,food,positive
+"The wait was not too bad at lunch, around 15 minutes.",wait_time,positive
+See [URL] for specials.,none,neutral
+Sticky menus and dirty silverware.,cleanliness,negative
+The food was okay but I lost my appetite.,food,neutral
+"Service was slow, as usual lately.",wait_time,negative

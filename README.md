@@ -4,76 +4,161 @@ AI review insights for independent restaurants. ReviewPulse turns a restaurant's
 
 CECS 451 Term Project, Team 5: Christian Vanegas, Nathan Sarkozy, Nguyen Nguyen, Nathan Fender
 
-> Status: Phase 2 (prototype) in progress. Sections marked TODO are filled in as code lands.
+> **Status (Phase 2, Nov 20, 2026):** working MVP. The full flow (CSV → sentences → labels → ranked problems → brief → reply drafts) runs in a Streamlit dashboard and from the command line, with Claude Opus 5.5 or a fully offline keyword fallback. See [Completed vs. planned](#completed-vs-planned).
 
 ## Architecture
 
-Reviews (Yelp data or CSV) → Preprocess (clean, split sentences, remove names/IDs) → **LLM extraction** (topic, sentiment, detail as JSON) → Label store (SQLite, by week) → Ranking (mentions × negativity × (1 + trend), top 3) → **LLM writing** (weekly brief, reply drafts) → Dashboard (Streamlit + Plotly) → Owner reviews, edits and approves.
+```mermaid
+flowchart LR
+    A["Reviews<br/>CSV upload or Yelp JSON<br/><i>data.py</i>"] --> B["Preprocess<br/>clean, scrub names/IDs,<br/>split sentences, group by week<br/><i>preprocess.py</i>"]
+    B --> C["LLM extraction<br/>topic, sentiment, detail as JSON<br/><i>labelers.py</i>"]
+    C <--> S[("Label cache<br/>SQLite<br/><i>store.py</i>")]
+    C --> D["Ranking (no AI)<br/>mentions × negativity × (1 + trend)<br/><i>ranking.py</i>"]
+    D --> E["LLM writing<br/>weekly brief + grounding check<br/><i>brief.py</i>"]
+    D --> R["LLM writing<br/>reply drafts + promise check<br/><i>replies.py</i>"]
+    E --> F["Dashboard<br/>Streamlit + Plotly<br/><i>app.py</i>"]
+    R --> F
+    F --> G(["Owner reads, edits,<br/>copies replies"])
+    C -. benchmark .-> V["Offline evaluation<br/>keyword rules vs. LLM, macro-F1<br/><i>evaluate.py</i>"]
+```
 
-Offline evaluation compares the LLM extraction against keyword rules and a pre-trained ABSA model (macro-F1).
-
-TODO: diagram image in `docs/`.
+Two steps use the LLM (sentence labeling and writing); everything between them is plain, inspectable code. If no API key is set, or a call fails or is refused, each LLM step falls back automatically: keyword rules label sentences, and template text writes the brief and replies. The app therefore always runs.
 
 ## Setup
 
-Requirements: Python 3.10+ and an Anthropic API key.
+Requirements: Python 3.10+. An Anthropic API key is optional (needed only for the Claude labeler and generated text).
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/CECS447-120934/ReviewPulse.git
 cd ReviewPulse
 python -m venv .venv
 # Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env   # then put your ANTHROPIC_API_KEY in .env
+cp .env.example .env   # then put your ANTHROPIC_API_KEY in .env (never commit it)
 ```
+
+Configuration (environment variables or `.env`):
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `ANTHROPIC_API_KEY` | unset | Enables Claude. Unset means offline mode. |
+| `REVIEWPULSE_MODEL` | `claude-opus-5-5` | Model used for labeling, brief and replies. |
 
 ## Data
 
-The Yelp Open Dataset is not included (its terms restrict redistribution). Download it from https://business.yelp.com/data/resources/open-dataset/ and place the files in `data/raw/`. For a quick run without it, `data/sample_reviews.csv` has 38 synthetic reviews of a fictional restaurant over 6 weeks.
-
-Loading and preprocessing (`data.py`, `preprocess.py`) need only `pandas`; tests need `pytest`. Both are in `requirements.txt`.
+- **Sample (included):** `data/sample_reviews.csv` has 38 synthetic reviews of a fictional Long Beach Italian restaurant over 6 weeks (Sep 28 to Nov 8, 2026). It includes a planted problem: wait-time complaints grow over the last four weeks. It also contains fake names, a phone number, an email and a URL, to test scrubbing.
+- **Gold labels (included):** `data/gold/sample_gold.csv` has the 92 preprocessed sample sentences, each with one topic and sentiment. These are **draft labels from a single annotator** and still need the second-labeler pass and Cohen's kappa planned in Phase 1. Guideline: label the main thing the sentence judges; slowness and waiting are `wait_time`, and staff behavior is `service`.
+- **Yelp Open Dataset (not included):** its terms restrict redistribution. Download it from https://business.yelp.com/data/resources/open-dataset/ and put the JSON files in `data/raw/` (git-ignored). Use `data.list_restaurants("data/raw", city="Philadelphia")` to pick a `business_id`.
+- **Your own CSV:** any file with a text column (`text`, `review`, `comment`, `body`...) and a date column (`date`, `created_at`, `review_date`...). A rating column (`stars`, `rating`...) is optional.
 
 ## Run the prototype
 
-Preprocessing only, so far (load → clean → remove names/IDs → split into sentences by week):
-
 ```bash
-python preprocess.py data/sample_reviews.csv
-python preprocess.py data/raw <business_id>   # Yelp; find IDs with data.list_restaurants()
-python -m pytest tests/ -q
-```
+# Dashboard: choose the sample or upload a CSV, then press Analyze
+streamlit run app.py
 
-TODO: labeling, ranking, brief and dashboard.
+# Command line: prints the top problems and the brief, writes outputs/
+python pipeline.py data/sample_reviews.csv            # Claude if a key is set
+python pipeline.py data/sample_reviews.csv --offline  # keyword baseline, no API calls
+python pipeline.py data/raw --business-id <id> --limit 400
+
+# Evaluation against the gold labels, and the unit tests
+python evaluate.py              # keyword baseline, plus Claude if a key is set
+python -m pytest tests/ -q      # 40 tests, no network needed (the Claude client is faked)
+```
 
 ## Reproduce a sample result
 
-TODO
+```bash
+python pipeline.py data/sample_reviews.csv --offline --out outputs
+python evaluate.py --offline
+```
+
+The expected output, kept in [`docs/sample_output/`](docs/sample_output/), is deterministic:
+
+```
+38 reviews -> 92 sentences | labeler: keyword-rules | brief: template
+Top problems:
+  1. wait_time    score  21.75  negative 5 (prev 0)  trend +2.0
+  2. food         score    6.5  negative 2 (prev 1)  trend +1.0
+  3. service      score    5.0  negative 1 (prev 0)  trend +1.0
+
+      labeler  n  topic_macro_f1  sentiment_macro_f1  joint_accuracy  failed_batches  wait_time_in_top3
+keyword-rules 92           0.789               0.464           0.457               0               True
+```
+
+The planted wait-time problem ranks first, and each problem links to quoted sentences ([`brief.md`](docs/sample_output/brief.md), [`problems.json`](docs/sample_output/problems.json)). The keyword baseline finds topics reasonably well but gets sentiment wrong more than half the time ([`eval_errors.csv`](docs/sample_output/eval_errors.csv)). It misses implied topics ("The tiramisu was perfect." → `none`) and mixed sentences ("Food was good but a bit pricey." → `neutral`). These are the cases the LLM labeler is meant to fix. Running with a key adds a `llm:claude-opus-5-5` row to the same table, with cost per 100 sentences.
 
 ## Main files
 
-TODO
+| File | What it does |
+| --- | --- |
+| `app.py` | Streamlit dashboard: upload, KPIs, weekly trend chart, top-3 problem cards with evidence, brief, reply editor. |
+| `pipeline.py` | `analyze()` runs load → preprocess → label → rank. The CLI also writes the brief and output files. |
+| `data.py` | Loads Yelp JSON (streamed, filtered by business) or any CSV with flexible headers into one table. |
+| `preprocess.py` | Cleans text; replaces names, phones, emails, URLs and IDs with placeholders; splits into sentences; adds the week. |
+| `labelers.py` | `LLMLabeler` (Claude, batched, cached, falls back on errors) and `KeywordLabeler` (rule baseline). |
+| `llm.py` | The single place that calls the Claude API: key handling, text extraction, refusals, token and cost tally. |
+| `store.py` | SQLite cache so each sentence is labeled by the LLM only once (`data/labels.sqlite`, git-ignored). |
+| `ranking.py` | Problem score, weekly counts, evidence selection, window summary. No AI. |
+| `brief.py` | Weekly brief from the ranked problems (LLM or template), plus `check_grounding()`. |
+| `replies.py` | Reply drafts (LLM or template), plus `promise_check()` for refunds, freebies and similar. |
+| `evaluate.py` | Macro-F1 for topic and sentiment, joint accuracy, time and cost per 100 sentences, top-3 check, error file. |
+| `schema.py` | Topic and sentiment vocabularies shared by every module. |
+| `tests/` | `test_preprocess.py` (loading, scrubbing, splitting) and `test_pipeline.py` (labelers, cache, ranking, brief, replies). |
 
 ## LLM prompts and API workflow
 
-1. Sentence labeling (`labelers.py`)
-- `LLMLabeler` sends review sentences to Claude in batches of 25. Input is a JSON list of numbered sentences.
-- `SYSTEM_PROMPT` sets the rules and gives one few-shot example. Claude returns a JSON array with `topic`
-  (food, service, wait_time, price, cleanliness, ambience or none), `sentiment` (positive, neutral, negative) and a short `detail`.
-- `parse_llm_json` checks the reply. Invalid JSON or labels outside the allowed lists become `none / neutral`.
-- Labels are cached in SQLite, so each sentence is only sent once.
-- `KeywordLabeler` is the offline baseline. `get_labeler()` uses Claude if `ANTHROPIC_API_KEY` is set, otherwise the keyword rules.
+All calls go through `llm.complete()`: Claude Opus 5.5 via `client.beta.messages.create` with server-side refusal fallback (`fallbacks="default"`) and an `effort` level per task. Claude Opus 5.5 always thinks, so the reply can begin with a thinking block. `complete()` returns only the text blocks, raises `LLMRefusal` on `stop_reason == "refusal"`, and adds token usage to a running tally for cost reporting.
 
-2. Reply drafting (`replies.py`)
-- `draft_reply` sends one review and its star rating to Claude. `REPLY_SYSTEM` requires a short, specific reply that never
-  promises refunds, free items or discounts and never invents facts.
-- `promise_check` warns if a reply contains words like "refund" or "free". Without a key, a generic template reply is used.
-- Replies are only drafts. The owner edits them, and nothing is posted.
+**1. Sentence labeling** (`labelers.py`, `SYSTEM_PROMPT`, effort `low`)
+- Input: a JSON list of up to 25 numbered, already scrubbed sentences: `Input: [{"i":1,"s":"Sat 45 minutes before anyone came over."}, ...]`
+- Prompt: the allowed labels, rules for negation and implied topics, and one few-shot example.
+- Output: `[{"i":1,"topic":"wait_time","sentiment":"negative","detail":"45-minute wait"}, ...]`
+- Our code: `parse_llm_json` tolerates text around the array and maps unknown topics or sentiments to `none`/`neutral`. Each label is cached by (model, sentence hash). If a batch errors or is refused, that batch gets keyword labels, which are not cached.
+
+**2. Weekly brief** (`brief.py`, `BRIEF_SYSTEM`, effort `medium`)
+- Input: only the window summary and the ranked problems (counts, trend, evidence sentences) as JSON. Claude never sees raw reviews here.
+- Output: under 220 words of Markdown, one numbered item per problem, with a quote copied exactly and one suggested action.
+- Our code: `check_grounding()` checks that every quoted string appears in the evidence. The dashboard warns the owner about any quote it can't find.
+
+**3. Reply drafts** (`replies.py`, `REPLY_SYSTEM`, effort `low`)
+- Input: one review and its star rating. Output: a 2–4 sentence reply in the owner's voice.
+- Rules: refer to what the reviewer said; no refunds, free items or discounts; no invented facts.
+- Our code: `promise_check()` flags words like "refund" or "free" in the edited reply. Replies are only drafts; nothing is posted.
+
+**The team's own contribution** beyond the API call: data loading for Yelp and arbitrary CSVs; PII scrubbing and sentence splitting; batching, caching and fallback; the ranking formula and evidence selection; grounding and promise checks; the keyword baseline; the evaluation harness and gold labels; and the dashboard.
+
+**Cost:** at $4 / $20 per million input/output tokens, the CLI and dashboard report actual tokens and estimated dollars for each run. The Phase 1 estimate was under $1 per restaurant per month for 200 reviews. *TODO: fill in the measured cost per 100 sentences from `python evaluate.py` with a key.*
+
 ## Completed vs. planned
 
 | Feature | Status |
 | --- | --- |
-| TODO | |
+| CSV and Yelp loading, flexible headers | Done (`data.py`) |
+| Cleaning, PII scrubbing, sentence split, weekly grouping | Done (`preprocess.py`, 24 tests) |
+| Claude sentence labeling (batched, cached, fallback) | Done (`labelers.py`). Tested with a fake client; **live run pending an API key** |
+| Keyword baseline | Done |
+| Problem ranking with trend and evidence | Done (`ranking.py`) |
+| Weekly brief, LLM or template, with grounding check | Done (`brief.py`) |
+| Reply drafts with promise check | Done (`replies.py`) |
+| Streamlit dashboard, end to end | Done (`app.py`) |
+| Evaluation harness (macro-F1, joint accuracy, cost, top-3 check) | Done (`evaluate.py`) |
+| Keyword baseline results on the sample gold set | Done (table above) |
+| Claude results on the gold set; cost per 100 sentences | Planned: needs a run with the team's API key |
+| Second labeler and Cohen's kappa for the gold set; ~300 Yelp sentences | Planned (Phase 3) |
+| SemEval-2014 restaurant benchmark | Planned (Phase 3) |
+| Pre-trained DeBERTa-v3 ABSA baseline | Planned (Phase 3) |
+| Blind 1–5 rating of LLM replies vs. template replies | Planned (Phase 3) |
+| Live platform connections, auto-posting, multi-location, billing | Out of scope (see Phase 1) |
 
 ## Known limitations
 
-TODO
+- **One label per sentence.** "Food was good but a bit pricey" is about two topics; we keep only the main one, so the second complaint is lost.
+- **The sample is small and synthetic.** With 38 reviews, the "previous window" covers only 2 weeks, so trends are large and noisy. Real restaurants need more history.
+- **Gold labels are a draft** from one annotator, and the keyword rules were written knowing the same kind of sentences. Its scores are optimistic, not a fair benchmark.
+- **The trend clip [-0.5, 2] and sentiment weights are hand-picked**, not fitted to rating outcomes. `avg_stars_when_negative` is shown as an impact hint but is not used in the score.
+- **Name scrubbing is regex-based.** It catches common patterns ("our server Jessica", "ask for Mike") but not every name.
+- **The grounding check covers quotes only.** It does not verify numbers or suggestions in the LLM brief.
+- **Fake or incentivized reviews are not filtered** (planned outlier filter).
+- **English only.**

@@ -1,0 +1,2 @@
+labeler,n,topic_macro_f1,sentiment_macro_f1,joint_accuracy,sec_per_100,usd_per_100,failed_batches,wait_time_in_top3
+keyword-rules,92,0.789,0.464,0.457,0.0,0.0,0,True

@@ -1,6 +1,7 @@
 """Reply drafting. Always a draft: the owner edits and approves; nothing is posted."""
-import os
 import re
+
+import llm
 
 REPLY_SYSTEM = """You write short, specific replies (2-4 sentences) from a restaurant owner to a customer review.
 Rules: refer to something the reviewer actually said; thank them; if the review is negative, acknowledge the
@@ -26,13 +27,18 @@ def template_reply(stars: float, topics: list[str]) -> str:
 
 def draft_reply(review_text: str, stars: float, topics: list[str], client=None, model: str | None = None) -> dict:
     """Return {"text", "source", "warnings"}. Uses the LLM when a client is given, else the template."""
-    if client is None:
+    text = None
+    if client is not None:
+        import anthropic
+
+        model = model or llm.model_name()
+        try:
+            # max_tokens leaves room for thinking (always on for Opus 5.5); the prompt keeps the reply short.
+            text = llm.complete(client, REPLY_SYSTEM, f"Rating: {stars} stars\nReview: {review_text}",
+                                max_tokens=2000, effort="low", model=model)
+            source = f"llm:{model}"
+        except (anthropic.APIError, llm.LLMRefusal):
+            text = None
+    if not text:
         text, source = template_reply(stars, topics), "template"
-    else:
-        model = model or os.environ.get("REVIEWPULSE_MODEL", "claude-opus-5-5")
-        msg = client.messages.create(
-            model=model, max_tokens=300, system=REPLY_SYSTEM,
-            messages=[{"role": "user", "content": f"Rating: {stars} stars\nReview: {review_text}"}],
-        )
-        text, source = msg.content[0].text.strip(), f"llm:{model}"
     return {"text": text, "source": source, "warnings": promise_check(text)}

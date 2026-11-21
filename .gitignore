@@ -28,3 +28,6 @@ Term_project*.pdf
 Thumbs.db
 .vscode/
 .idea/
+
+# Local run outputs (a reference run is kept in docs/sample_output/)
+outputs/

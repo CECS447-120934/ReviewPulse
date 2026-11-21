@@ -2,10 +2,9 @@ import json
 import os
 import re
 
-from . import SENTIMENTS, TOPICS
-from .store import LabelCache
-
-NONE_LABEL = {"topic": "none", "sentiment": "neutral", "detail": ""}
+import llm
+from schema import NONE_LABEL, SENTIMENTS, TOPICS
+from store import LabelCache
 
 _TOPIC_WORDS = {
     "wait_time": ["wait", "waited", "waiting", "slow", "minutes", "hour", "forever", "took ages", "quick", "fast", "prompt"],
@@ -92,23 +91,28 @@ def parse_llm_json(text: str, n: int) -> list[dict]:
 
 class LLMLabeler:
     """Claude-based labeler with batching and caching."""
-    def __init__(self, api_key: str | None = None, model: str | None = None, cache: LabelCache | None = None, batch_size: int = 25):
-        """Set up the API client, model name and cache."""
-        import anthropic 
+    def __init__(self, api_key: str | None = None, model: str | None = None, cache: LabelCache | None = None,
+                 batch_size: int = 25, client=None):
+        """Set up the API client, model name and cache. `client` lets tests pass a fake client."""
+        if client is None:
+            import anthropic
 
-        self.client = anthropic.Anthropic(api_key=api_key or os.environ["ANTHROPIC_API_KEY"])
-        self.model = model or os.environ.get("REVIEWPULSE_MODEL", "claude-opus-5-5")
+            client = anthropic.Anthropic(api_key=api_key or os.environ["ANTHROPIC_API_KEY"])
+        self.client = client
+        self.model = model or llm.model_name()
         self.cache = cache
         self.batch_size = batch_size
         self.name = f"llm:{self.model}"
         self.api_calls = 0
+        self.failed_batches = 0
+        self.last_error = ""  # shown to the user so a silent keyword fallback can't pass as LLM output
 
     def label(self, sentences: list[str]) -> list[dict]:
         """Label each sentence; returns one dict per sentence."""
         results: list[dict | None] = [None] * len(sentences)
         todo = []
         for idx, s in enumerate(sentences):
-            hit = self.cache.get(self.model, s) if self.cache else None
+            hit = self.cache.get(self.model, s) if self.cache is not None else None
             if hit:
                 results[idx] = hit
             else:
@@ -116,23 +120,32 @@ class LLMLabeler:
         for b in range(0, len(todo), self.batch_size):
             chunk = todo[b:b + self.batch_size]
             labels = self._call([sentences[i] for i in chunk])
+            if labels is None:  # API error or refusal: keyword labels, and don't cache them as LLM labels
+                self.failed_batches += 1
+                labels = KeywordLabeler().label([sentences[i] for i in chunk])
+                for i, lab in zip(chunk, labels):
+                    results[i] = lab
+                continue
             for i, lab in zip(chunk, labels):
                 results[i] = lab
-                if self.cache:
+                if self.cache is not None:
                     self.cache.put(self.model, sentences[i], lab)
         return results
 
-    def _call(self, batch: list[str]) -> list[dict]:
-        """Send one batch of sentences to Claude and parse the reply."""
+    def _call(self, batch: list[str]) -> list[dict] | None:
+        """Send one batch of sentences to Claude and parse the reply (None if the call failed)."""
+        import anthropic
+
         payload = json.dumps([{"i": k + 1, "s": s} for k, s in enumerate(batch)])
-        msg = self.client.messages.create(
-            model=self.model,
-            max_tokens=4096,
-            system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": f"Input: {payload}\nOutput:"}],
-        )
-        self.api_calls += 1
-        return parse_llm_json(msg.content[0].text, len(batch))
+        try:
+            text = llm.complete(self.client, SYSTEM_PROMPT, f"Input: {payload}\nOutput:",
+                                max_tokens=8000, effort="low", model=self.model)
+        except (anthropic.APIError, llm.LLMRefusal) as e:
+            self.last_error = f"{type(e).__name__}: {e}"[:200]
+            return None
+        finally:
+            self.api_calls += 1
+        return parse_llm_json(text, len(batch))
 
 
 def get_labeler(prefer_llm: bool = True, cache: LabelCache | None = None):

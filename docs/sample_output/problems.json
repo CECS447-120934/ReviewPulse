@@ -1,0 +1,97 @@
+{
+  "labeler": "keyword-rules",
+  "summary": {
+    "window_start": "2026-10-12",
+    "window_end": "2026-11-08",
+    "weeks": 4,
+    "reviews": 25,
+    "sentences": 62,
+    "avg_stars": 2.88
+  },
+  "problems": [
+    {
+      "topic": "wait_time",
+      "score": 21.75,
+      "mentions": 16,
+      "negative_mentions": 5,
+      "negative_mentions_prev_window": 0,
+      "negativity": 0.45,
+      "trend": 2.0,
+      "reviews_affected": 5,
+      "avg_stars_when_negative": 2.2,
+      "avg_stars_overall": 2.88,
+      "evidence": [
+        {
+          "review_id": "32796d71209891f5",
+          "date": "2026-11-08",
+          "stars": 2.0,
+          "sentence": "Service was slow, as usual lately.",
+          "detail": ""
+        },
+        {
+          "review_id": "bd9ddaa32af32818",
+          "date": "2026-11-06",
+          "stars": 2.0,
+          "sentence": "Long wait for a table, then a long wait for food.",
+          "detail": ""
+        },
+        {
+          "review_id": "dcca4ede484f87cb",
+          "date": "2026-11-04",
+          "stars": 2.0,
+          "sentence": "Slow service too.",
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "topic": "food",
+      "score": 6.5,
+      "mentions": 15,
+      "negative_mentions": 2,
+      "negative_mentions_prev_window": 1,
+      "negativity": 0.22,
+      "trend": 1.0,
+      "reviews_affected": 2,
+      "avg_stars_when_negative": 3.0,
+      "avg_stars_overall": 2.88,
+      "evidence": [
+        {
+          "review_id": "c11c90eb020c3b51",
+          "date": "2026-10-20",
+          "stars": 2.0,
+          "sentence": "The chicken parm was cold in the middle.",
+          "detail": ""
+        },
+        {
+          "review_id": "f25be09e2bcc463d",
+          "date": "2026-10-12",
+          "stars": 4.0,
+          "sentence": "The soup was a little bland.",
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "topic": "service",
+      "score": 5.0,
+      "mentions": 9,
+      "negative_mentions": 1,
+      "negative_mentions_prev_window": 0,
+      "negativity": 0.28,
+      "trend": 1.0,
+      "reviews_affected": 1,
+      "avg_stars_when_negative": 1.0,
+      "avg_stars_overall": 2.88,
+      "evidence": [
+        {
+          "review_id": "1d2a55f804c7b0a3",
+          "date": "2026-10-22",
+          "stars": 1.0,
+          "sentence": "The host was rude when we asked about our wait.",
+          "detail": ""
+        }
+      ]
+    }
+  ]
+}

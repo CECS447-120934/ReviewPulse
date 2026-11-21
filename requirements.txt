@@ -3,5 +3,13 @@
 # Data loading and preprocessing (data.py, preprocess.py)
 pandas>=2.0
 
+# Claude API (labelers.py, brief.py, replies.py) and loading .env
+anthropic>=2.12
+python-dotenv>=1.0
+
+# Dashboard (app.py)
+streamlit>=1.40
+plotly>=5.0
+
 # Tests (tests/)
 pytest>=7.0
