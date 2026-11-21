@@ -64,4 +64,4 @@ One label per sentence (mixed sentences lose a topic). The sample is small and s
 | Christian Vanegas | Repository and docs; ranking, brief, pipeline, dashboard, evaluation harness; Claude API integration |
 | Nathan Fender | Data loading (Yelp, CSV), preprocessing and PII scrubbing, sample data, preprocessing tests |
 | Nguyen Nguyen | LLM labeler and prompt, keyword baseline, reply drafting |
-| Nathan Sarkozy | *TODO* |
+| Nathan Sarkozy | Evaluation benchmarks: human second labeling and Cohen's kappa, Yelp and SemEval-2014 test sets, DeBERTa-v3 ABSA baseline |
