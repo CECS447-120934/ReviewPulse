@@ -47,7 +47,8 @@ Configuration (environment variables or `.env`):
 ## Data
 
 - **Sample (included):** `data/sample_reviews.csv` has 38 synthetic reviews of a fictional Long Beach Italian restaurant over 6 weeks (Sep 28 to Nov 8, 2026). It includes a planted problem: wait-time complaints grow over the last four weeks. It also contains fake names, a phone number, an email and a URL, to test scrubbing.
-- **Gold labels (included):** `data/gold/sample_gold.csv` has the 92 preprocessed sample sentences, each with one topic and sentiment. These are a **single AI-assisted draft** (from a Claude model, the same family as the labeler under test). They still need the human second-labeler pass and Cohen's kappa planned in Phase 1, so treat scores against them as preliminary. Guideline: label the main thing the sentence judges; slowness and waiting are `wait_time`, and staff behavior is `service`.
+- **Gold labels (included):** `data/gold/sample_gold.csv` has the 92 preprocessed sample sentences, each with one topic and sentiment. These are a **single AI-assisted draft** (from a Claude model, the same family as the labeler under test). They still need the human second-labeler pass and Cohen's kappa planned in Phase 1, so treat scores against them as preliminary. Human labeling follows [`docs/labeling_guideline.md`](docs/labeling_guideline.md): label the main thing the sentence judges; slowness and waiting are `wait_time`, and staff behavior is `service`.
+- **Human labeling (in progress):** `data/gold/annotations/sample_blind.csv` is the same 92 sentences with the labels removed. Two team members fill in copies on their own; `agreement.py` measures Cohen's kappa, lists disagreements and merges the resolved labels into a human gold set.
 - **Yelp Open Dataset (not included):** its terms restrict redistribution. Download it from https://business.yelp.com/data/resources/open-dataset/ and put the JSON files in `data/raw/` (git-ignored). Use `data.list_restaurants("data/raw", city="Philadelphia")` to pick a `business_id`.
 - **Your own CSV:** any file with a text column (`text`, `review`, `comment`, `body`...) and a date column (`date`, `created_at`, `review_date`...). A rating column (`stars`, `rating`...) is optional.
 
@@ -64,7 +65,10 @@ python pipeline.py data/raw --business-id <id> --limit 400
 
 # Evaluation against the gold labels, and the unit tests
 python evaluate.py              # keyword baseline, plus Claude if a key is set
-python -m pytest tests/ -q      # 40 tests, no network needed (the Claude client is faked)
+python -m pytest tests/ -q      # 49 tests, no network needed (the Claude client is faked)
+
+# Inter-annotator agreement for human gold labels (see docs/labeling_guideline.md)
+python agreement.py compare data/gold/annotations/sample_A.csv data/gold/annotations/sample_B.csv
 ```
 
 ## Reproduce a sample result
@@ -126,8 +130,9 @@ Claude makes 4 errors out of 92, mostly "slow service" sentences labeled `servic
 | `brief.py` | Weekly brief from the ranked problems (LLM or template), plus `check_grounding()`. |
 | `replies.py` | Reply drafts (LLM or template), plus `promise_check()` for refunds, freebies and similar. |
 | `evaluate.py` | Macro-F1 for topic and sentiment, joint accuracy, time and cost per 100 sentences, top-3 check, error file. |
+| `agreement.py` | Human gold labels: blank labeling sheets, Cohen's kappa between two labelers, disagreement list, merge into a final gold set. |
 | `schema.py` | Topic and sentiment vocabularies shared by every module. |
-| `tests/` | `test_preprocess.py` (loading, scrubbing, splitting) and `test_pipeline.py` (labelers, cache, ranking, brief, replies). |
+| `tests/` | `test_preprocess.py` (loading, scrubbing, splitting), `test_pipeline.py` (labelers, cache, ranking, brief, replies) and `test_agreement.py` (kappa, compare, merge). |
 
 ## LLM prompts and API workflow
 
@@ -168,7 +173,8 @@ All calls go through `llm.complete()`: Claude Opus 5.5 via `client.beta.messages
 | Evaluation harness (macro-F1, joint accuracy, cost, top-3 check) | Done (`evaluate.py`) |
 | Keyword baseline results on the sample gold set | Done (table above) |
 | Claude results on the draft gold set; cost per 100 sentences | Done (preliminary; see [Reproduce](#with-claude-needs-an-api-key-outputs-vary-slightly-between-runs)) |
-| Second labeler and Cohen's kappa for the gold set; ~300 Yelp sentences | Planned (Phase 3) |
+| Second labeler and Cohen's kappa for the gold set | In progress: tooling and guideline done (`agreement.py`, `docs/labeling_guideline.md`); labeling underway |
+| ~300 hand-labeled Yelp sentences | Planned (Phase 3) |
 | SemEval-2014 restaurant benchmark | Planned (Phase 3) |
 | Pre-trained DeBERTa-v3 ABSA baseline | Planned (Phase 3) |
 | Blind 1–5 rating of LLM replies vs. template replies | Planned (Phase 3) |
